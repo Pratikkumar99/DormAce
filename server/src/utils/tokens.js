@@ -21,7 +21,9 @@ const base = () => ({
   httpOnly: true,
   secure: isProd || env.COOKIE_SAMESITE === 'none',
   sameSite: env.COOKIE_SAMESITE,
-  domain: env.COOKIE_DOMAIN,
+  ...(env.COOKIE_DOMAIN
+    ? { domain: env.COOKIE_DOMAIN }
+    : {}),
 });
 
 export function setAuthCookies(res, access, refresh) {
