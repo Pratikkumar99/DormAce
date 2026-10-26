@@ -1,0 +1,25 @@
+import { Router } from 'express';
+import auth from './auth.routes.js';
+import catalog from './catalog.routes.js';
+import items from './items.routes.js';
+import requests from './requests.routes.js';
+import conversations from './conversations.routes.js';
+import business from './business.routes.js';
+import wallet from './wallet.routes.js';
+import notifications from './notifications.routes.js';
+import reports from './reports.routes.js';
+import admin from './admin.routes.js';
+
+const r = Router();
+r.get('/health', (_req, res) => res.json({ ok: true }));
+r.use('/auth', auth);
+r.use('/catalog', catalog);
+r.use('/items', items);
+r.use('/requests', requests);
+r.use('/conversations', conversations);
+r.use('/businesses', business);
+r.use('/wallet', wallet);
+r.use('/notifications', notifications);
+r.use('/reports', reports);
+r.use('/admin', admin);
+export default r;
