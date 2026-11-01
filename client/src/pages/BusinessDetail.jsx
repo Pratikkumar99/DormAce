@@ -1,6 +1,6 @@
-import { Link, useNavigate, useParams } from 'react-router-dom';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import toast from 'react-hot-toast';
+import { Link, useNavigate, useParams } from "react-router-dom";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import toast from "react-hot-toast";
 import {
   BadgeCheck,
   Clock,
@@ -8,11 +8,12 @@ import {
   Store,
   Truck,
   Pencil,
-} from 'lucide-react';
-import { api, asset, errMsg } from '../lib/api.js';
-import { useTaxonomy } from '../hooks/useTaxonomy.js';
-import ItemCard from '../components/market/ItemCard.jsx';
-import { EmptyState, PageLoader, Spinner } from '../components/ui/index.jsx';
+  Plus,
+} from "lucide-react";
+import { api, asset, errMsg } from "../lib/api.js";
+import { useTaxonomy } from "../hooks/useTaxonomy.js";
+import ItemCard from "../components/market/ItemCard.jsx";
+import { EmptyState, PageLoader, Spinner } from "../components/ui/index.jsx";
 
 export default function BusinessDetail() {
   const { id } = useParams();
@@ -20,17 +21,17 @@ export default function BusinessDetail() {
   const { segName } = useTaxonomy();
 
   const { data, isLoading, error } = useQuery({
-    queryKey: ['business', id],
+    queryKey: ["business", id],
     retry: false,
     queryFn: async () => (await api.get(`/businesses/${id}`)).data,
   });
 
   const items = useQuery({
-    queryKey: ['items', 'biz', id],
-    enabled: !!data && data.business.status === 'active',
+    queryKey: ["items", "biz", id],
+    enabled: !!data && data.business.status === "active",
     queryFn: async () =>
       (
-        await api.get('/items', {
+        await api.get("/items", {
           params: { business: id, limit: 50 },
         })
       ).data.items,
@@ -39,9 +40,9 @@ export default function BusinessDetail() {
   const chat = useMutation({
     mutationFn: async () =>
       (
-        await api.post('/conversations', {
+        await api.post("/conversations", {
           businessId: id,
-          message: 'Hi! I’d like to know more about your services.',
+          message: "Hi! I’d like to know more about your services.",
         })
       ).data.conversationId,
     onSuccess: (cid) => nav(`/chat/${cid}`),
@@ -93,9 +94,7 @@ export default function BusinessDetail() {
         <div className="flex-1 pb-1">
           <h1 className="flex items-center gap-2 text-2xl font-semibold tracking-tight text-neutral-900 dark:text-neutral-100">
             {b.name}
-            {b.isVerified && (
-              <BadgeCheck className="h-5 w-5 text-blue-500" />
-            )}
+            {b.isVerified && <BadgeCheck className="h-5 w-5 text-blue-500" />}
           </h1>
 
           <p className="text-sm text-neutral-500 dark:text-neutral-400">
@@ -127,10 +126,9 @@ export default function BusinessDetail() {
       </div>
 
       {/* Business status */}
-      {b.status !== 'active' && (
+      {b.status !== "active" && (
         <p className="mt-4 rounded-lg bg-neutral-100 p-3 text-sm text-neutral-700 dark:bg-neutral-800 dark:text-neutral-300">
-          Status:{' '}
-          <b className="capitalize">{b.status}</b>
+          Status: <b className="capitalize">{b.status}</b>
           {b.reviewNote && ` — ${b.reviewNote}`}
         </p>
       )}
@@ -157,23 +155,29 @@ export default function BusinessDetail() {
         )}
 
         <span className="chip capitalize">
-          For{' '}
-          {b.audience === 'both'
-            ? 'all hostels'
-            : `${b.audience} hostels`}
+          For {b.audience === "both" ? "all hostels" : `${b.audience} hostels`}
         </span>
 
         {b.hostels?.length > 0 && (
           <span className="chip">
-            {b.hostels.map((h) => h.name).join(', ')}
+            {b.hostels.map((h) => h.name).join(", ")}
           </span>
         )}
       </div>
 
       {/* Products and services */}
-      <h2 className="mb-4 mt-10 text-lg font-semibold text-neutral-900 dark:text-neutral-100">
-        Products & services
-      </h2>
+      <div className="mb-4 mt-10 flex items-center justify-between gap-3">
+        <h2 className="text-lg font-semibold text-neutral-900 dark:text-neutral-100">
+          Products & services
+        </h2>
+
+        {isOwner && b.status === "active" && (
+          <Link to={`/sell?businessId=${b._id}`} className="btn-primary">
+            <Plus className="h-4 w-4" />
+            Add product
+          </Link>
+        )}
+      </div>
 
       {!items.data?.length ? (
         <EmptyState title="Nothing listed yet" />
