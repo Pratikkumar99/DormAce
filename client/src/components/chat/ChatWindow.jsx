@@ -377,14 +377,14 @@ export default function ChatWindow({ id, onBack }) {
         onSubmit={onSubmit}
         className="flex items-center gap-2 border-t border-neutral-200 bg-white p-3 dark:border-neutral-800 dark:bg-neutral-950"
       >
-        <button
+        {/* <button
           type="button"
           onClick={() => setPayOpen(true)}
           className="btn-outline rounded-full p-2.5"
           aria-label="Payments"
         >
           <IndianRupee className="h-4 w-4" />
-        </button>
+        </button> */}
 
         <input
           className="input flex-1 rounded-full"
@@ -408,12 +408,12 @@ export default function ChatWindow({ id, onBack }) {
         </button>
       </form>
 
-      <PaymentModal
+      {/* <PaymentModal
         open={payOpen}
         onClose={() => setPayOpen(false)}
         conversationId={id}
         otherName={convo?.other?.name}
-      />
+      /> */}
     </div>
   );
 }
